@@ -62,3 +62,42 @@ def progress(sequence, every=None, size=None, name='Items'):
         #    name=name,
         #    index=str(index or '?')
         #)
+        
+def get_step(steps, num_bars):
+    assert steps > 1, "Steps have to be > 1"
+    import sys
+    idx = 0
+    def step(info):
+        nonlocal steps
+        nonlocal num_bars
+        nonlocal idx
+    
+        progress = int((idx/(steps-1))*100)
+        bars = int((idx/(steps-1))*num_bars)
+        sys.stdout.write('\r')
+        # the exact output you're looking for:
+        sys.stdout.write("[{bars:{num_bars}}] {progress}% {info}".format(bars = '='*bars, 
+                                                                  progress = progress,
+                                                                  num_bars = num_bars,
+                                                                  info = info))
+        sys.stdout.flush()
+        
+        idx += 1
+    
+    return step
+
+def range_progress(steps, num_bars):
+    assert steps > 1, "Steps have to be > 1"
+    import sys
+
+    for idx in range(steps):
+        progress = int((idx/(steps-1))*100)
+        bars = int((idx/(steps-1))*num_bars)
+
+        sys.stdout.write('\r')
+        sys.stdout.write("[{bars:{num_bars}}] {progress}%".format(bars = '='*bars, 
+                                                                  progress = progress,
+                                                                  num_bars = num_bars))
+        sys.stdout.flush()
+
+        yield idx
